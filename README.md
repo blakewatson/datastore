@@ -1,14 +1,14 @@
 # DataStore
 
-DataStore is a JavaScript module that makes it easy to save key value pairs to [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) with an API similar to [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
+DataStore is a JavaScript module that makes it easy to save key value/pairs to [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) with an API similar to [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage).
 
-IndexedDB is allowed more storage space than localStorage. It also can store more data types than strings. That means you can save structured data without having to convert it to JSON first. IndexedDB, unlike localStorage, isn’t blocking—all operations are asynchronous.
+IndexedDB is allowed more storage space than localStorage. It can also store more data types than strings. That means you can save structured data without having to convert it to JSON first. IndexedDB, unlike localStorage, isn’t blocking—all operations are asynchronous.
 
-IndexedDB can do a _lot_ more, but the above reasons above are enough to use it even in relatively simple cases. This DataStore class is woefully underusing IndexedDB features. It merely replicates localStorage but by using IndexedDB behind the scenes for its advantages.
+IndexedDB can do a _lot_ more, but the reasons above are enough to use it even in relatively simple cases. This DataStore class is woefully underusing IndexedDB features. It merely replicates localStorage but by using IndexedDB behind the scenes for its advantages.
 
 ## Usage
 
-While DataStore aims to be as simple as localStorage, it does have one extra setup step: an instance needs to be instantiated.
+While DataStore aims to be as simple as localStorage, it does have one extra setup step: you must create an instance.
 
 ```js
 import DataStore from './path/to/DataStore.js';
@@ -97,7 +97,7 @@ While localStorage gives you a `length` property that you can read from, DataSto
 async function main() {
   let num = await store.count();
   // Ex: 3
-  
+
   // if you prefer the word "length," this method is identical
   num = await store.length();
   // still 3
@@ -123,7 +123,7 @@ DataStore.setupDb({
   onUpgradeNeeded: async (db, stores) => {
     // Perform any database operations you want to do.
     // `stores` represents a DataStore instance for each store you created.
-  }
+  },
 });
 ```
 
@@ -140,15 +140,15 @@ async function main() {
   const store = new DataStore('My Database');
   // number keys get turned into strings under the hood
   const post = await store.getItem(1);
-  
-  // pecify database name and object store name if not using default.
+
+  // specify database name and object store name if not using default.
   const metaStore = new DataStore('My Database', 'metadata');
   const likes = await metaStore.getItem('likes-1');
-  
+
   return { post, likes };
 }
 ```
 
 ## Keys are strings
 
-Datastore only supports strings as keys. That said, you *can* use numbers in `getItem`, `setItem`, and `removeItems`. Just be aware that they get converted to strings under the hood. The `keys()` method always returns an array of strings.
+DataStore only supports strings as keys. That said, you _can_ use numbers in `getItem`, `setItem`, and `removeItem`. Just be aware that they get converted to strings under the hood. The `keys()` method always returns an array of strings.
