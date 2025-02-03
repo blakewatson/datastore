@@ -136,14 +136,21 @@ If you use the `setupDb` method to create a named database and one or more named
 // is just an example of how to use multiple data stores on a database.
 
 async function main() {
+  // set up the database with 2 stores
+  DataStore.setupDb({
+    name: 'My Database',
+    storesToCreate: ['data', 'metadata'],
+  });
+
   // 'data' is the default object store name so we can omit it
   const store = new DataStore('My Database');
-  // number keys get turned into strings under the hood
+  // let’s say we’re using post id for the key.
+  // number keys get turned into strings under the hood.
   const post = await store.getItem(1);
 
   // specify database name and object store name if not using default.
   const metaStore = new DataStore('My Database', 'metadata');
-  const likes = await metaStore.getItem('likes-1');
+  const likes = await metaStore.getItem(1);
 
   return { post, likes };
 }
