@@ -1,3 +1,5 @@
+// @ts-check
+
 const DEFAULT_DB_NAME = 'Default DB';
 const DEFAULT_STORE_NAME = 'data';
 
@@ -22,7 +24,7 @@ export default class DataStore {
   static setupDb(options) {
     const {
       name,
-      dbVersion: version = 1,
+      version = 1,
       storesToCreate = DEFAULT_STORE_NAME,
       onUpgradeNeeded = null,
     } = options;
@@ -42,7 +44,7 @@ export default class DataStore {
 
       request.onupgradeneeded = (event) => {
         /** @type {IDBDatabase} */
-        const db = event.target.result;
+        const db = request.result;
         const existingStores = db.objectStoreNames;
         const dataStoreInstances = [];
 
@@ -80,6 +82,7 @@ export default class DataStore {
 
   getDb() {
     return new Promise((resolve, reject) => {
+      // @ts-ignore we know this.dbName and this.version exist
       const request = indexedDB.open(this.dbName, this.version);
 
       request.onerror = (event) => {
@@ -95,10 +98,12 @@ export default class DataStore {
       request.onupgradeneeded = (event) => {
         console.log('Upgrade needed');
         /** @type {IDBDatabase} */
-        const db = event.target.result;
+        const db = request.result;
         const existingStores = db.objectStoreNames;
 
+        // @ts-ignore we know this.storeName is a string
         if (!existingStores.contains(this.storeName)) {
+          // @ts-ignore we know this.storeName is a string
           db.createObjectStore(this.storeName);
         }
       };
@@ -107,6 +112,7 @@ export default class DataStore {
 
   /** @param {string | number} key */
   async getItem(key) {
+    /** @type {IDBDatabase} */
     const db = await this.getDb();
 
     if (typeof key === 'number') {
@@ -118,15 +124,20 @@ export default class DataStore {
     }
 
     return new Promise((resolve, reject) => {
+      if (!this.storeName) {
+        reject(new Error('Store name not set'));
+        return;
+      }
+
       const transaction = db.transaction(this.storeName, 'readonly');
 
-      transaction.onerror = (event) => reject(event.target.error);
+      transaction.onerror = (event) => reject(transaction.error);
 
       const store = transaction.objectStore(this.storeName);
 
       const request = store.get(key);
 
-      request.onerror = (event) => reject(event.target.error);
+      request.onerror = (event) => reject(request.error);
 
       request.onsuccess = () => {
         if (request.result === undefined) {
@@ -145,6 +156,7 @@ export default class DataStore {
    * @param {any} value
    */
   async setItem(key, value) {
+    /** @type {IDBDatabase} */
     const db = await this.getDb();
 
     if (typeof key === 'number') {
@@ -155,26 +167,34 @@ export default class DataStore {
       throw new Error('Key must be a string');
     }
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, 'readwrite');
+    return /** @type {Promise<void>} */ (
+      new Promise((resolve, reject) => {
+        if (!this.storeName) {
+          reject(new Error('Store name not set'));
+          return;
+        }
 
-      transaction.onerror = (event) => reject(event);
+        const transaction = db.transaction(this.storeName, 'readwrite');
 
-      const store = transaction.objectStore(this.storeName);
+        transaction.onerror = (event) => reject(transaction.error);
 
-      const request = store.put(value, key);
+        const store = transaction.objectStore(this.storeName);
 
-      request.onerror = (event) => reject(event);
+        const request = store.add(value, key);
 
-      request.onsuccess = () => {
-        db.close();
-        resolve();
-      };
-    });
+        request.onerror = (event) => reject(request.error);
+
+        request.onsuccess = () => {
+          db.close();
+          resolve();
+        };
+      })
+    );
   }
 
   /** @param {string | number} key */
   async removeItem(key) {
+    /** @type {IDBDatabase} */
     const db = await this.getDb();
 
     if (typeof key === 'number') {
@@ -185,22 +205,29 @@ export default class DataStore {
       throw new Error('Key must be a string');
     }
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, 'readwrite');
+    return /** @type {Promise<void>} */ (
+      new Promise((resolve, reject) => {
+        if (!this.storeName) {
+          reject(new Error('Store name not set'));
+          return;
+        }
 
-      transaction.onerror = (event) => reject(event.target.error);
+        const transaction = db.transaction(this.storeName, 'readwrite');
 
-      const store = transaction.objectStore(this.storeName);
+        transaction.onerror = (event) => reject(transaction.error);
 
-      const request = store.delete(key);
+        const store = transaction.objectStore(this.storeName);
 
-      request.onerror = (event) => reject(event.target.error);
+        const request = store.delete(key);
 
-      request.onsuccess = () => {
-        db.close();
-        resolve();
-      };
-    });
+        request.onerror = (event) => reject(request.error);
+
+        request.onsuccess = () => {
+          db.close();
+          resolve();
+        };
+      })
+    );
   }
 
   async keys() {
@@ -208,15 +235,20 @@ export default class DataStore {
     const db = await this.getDb();
 
     return new Promise((resolve, reject) => {
+      if (!this.storeName) {
+        reject(new Error('Store name not set'));
+        return;
+      }
+
       const transaction = db.transaction(this.storeName, 'readonly');
 
-      transaction.onerror = (event) => reject(event.target.error);
+      transaction.onerror = (event) => reject(transaction.error);
 
       const store = transaction.objectStore(this.storeName);
 
       const request = store.getAllKeys();
 
-      request.onerror = (event) => reject(event.target.error);
+      request.onerror = (event) => reject(request.error);
 
       request.onsuccess = () => {
         resolve(request.result);
@@ -226,18 +258,24 @@ export default class DataStore {
   }
 
   async count() {
+    /** @type {IDBDatabase} */
     const db = await this.getDb();
 
     return new Promise((resolve, reject) => {
+      if (!this.storeName) {
+        reject(new Error('Store name not set'));
+        return;
+      }
+
       const transaction = db.transaction(this.storeName, 'readonly');
 
-      transaction.onerror = (event) => reject(event.target.error);
+      transaction.onerror = (event) => reject(transaction.error);
 
       const store = transaction.objectStore(this.storeName);
 
       const request = store.count();
 
-      request.onerror = (event) => reject(event.target.error);
+      request.onerror = (event) => reject(request.error);
 
       request.onsuccess = () => {
         resolve(request.result);
@@ -251,23 +289,31 @@ export default class DataStore {
   }
 
   async clear() {
+    /** @type {IDBDatabase} */
     const db = await this.getDb();
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction(this.storeName, 'readwrite');
+    return /** @type {Promise<void>} */ (
+      new Promise((resolve, reject) => {
+        if (!this.storeName) {
+          reject(new Error('Store name not set'));
+          return;
+        }
 
-      transaction.onerror = (event) => reject(event.target.error);
+        const transaction = db.transaction(this.storeName, 'readwrite');
 
-      const store = transaction.objectStore(this.storeName);
+        transaction.onerror = (event) => reject(transaction.error);
 
-      const request = store.clear();
+        const store = transaction.objectStore(this.storeName);
 
-      request.onerror = (event) => reject(event.target.error);
+        const request = store.clear();
 
-      request.onsuccess = () => {
-        db.close();
-        resolve();
-      };
-    });
+        request.onerror = (event) => reject(request.error);
+
+        request.onsuccess = () => {
+          db.close();
+          resolve();
+        };
+      })
+    );
   }
 }
