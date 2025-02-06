@@ -4,11 +4,7 @@
   "description": "Save data to IndexedDB using localStorage APIs.",
   "main": "DataStore.js",
   "scripts": {
-    "build:esm:min": "esbuild DataStore.js --bundle --minify --format=esm --outfile=dist/datastore.esm.min.js",
-    "build:esm": "esbuild DataStore.js --bundle --format=esm --outfile=dist/datastore.esm.js",
-    "build:global:min": "esbuild DataStore.js --bundle --minify --format=iife --outfile=dist/datastore.global.min.js",
-    "build:global": "esbuild DataStore.js --bundle --format=iife --outfile=dist/datastore.global.js",
-    "build": "npm run build:esm && npm run build:global && npm run build:esm:min && npm run build:global:min"
+    "build": "node build.mjs"
   },
   "repository": {
     "type": "git",

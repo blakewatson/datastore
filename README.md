@@ -6,6 +6,10 @@ IndexedDB is allowed more storage space than localStorage. It can also store mor
 
 IndexedDB can do a _lot_ more, but the reasons above are enough to use it even in relatively simple cases. This DataStore class is woefully underusing IndexedDB features. It merely replicates localStorage but by using IndexedDB behind the scenes for its advantages.
 
+## Install
+
+_Instructions coming soon_
+
 ## Usage
 
 While DataStore aims to be as simple as localStorage, it does have one extra setup step: you must create an instance.
