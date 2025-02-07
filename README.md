@@ -8,14 +8,31 @@ IndexedDB can do a _lot_ more, but the reasons above are enough to use it even i
 
 ## Install
 
-_Instructions coming soon_
+If you are using npm, you can install DataStore with:
+
+```bash
+npm install @blakewatson/datastore
+```
+
+Or you can use the CDN version:
+
+```html
+<script src="https://unpkg.com/@blakewatson/datastore@latest/dist/datastore.global.min.js"></script>
+```
+
+There exists both a module version (`.esm`) that exports the `DataStore` class as a default export, and a global version (`.global`) that places the `DataStore` class in your global scope. Both are available minified or not.
+
+**Browse dist files:** [di1t](https://unpkg.com/browse/@blakewatson/datastore/dist/)
 
 ## Usage
 
 While DataStore aims to be as simple as localStorage, it does have one extra setup step: you must create an instance.
 
 ```js
-import DataStore from './path/to/DataStore.js';
+// if using npm
+import DataStore from '@blakewatson/datastore';
+// if using esm dist file
+import DataStore from './path/to/datastore.esm.js';
 
 const store = new DataStore();
 ```
