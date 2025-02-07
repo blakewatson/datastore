@@ -22,7 +22,7 @@ Or you can use the CDN version:
 
 There exists both a module version (`.esm`) that exports the `DataStore` class as a default export, and a global version (`.global`) that places the `DataStore` class in your global scope. Both are available minified or not.
 
-**Browse dist files:** [di1t](https://unpkg.com/browse/@blakewatson/datastore/dist/)
+**Browse dist files:** <https://unpkg.com/browse/@blakewatson/datastore/dist/>
 
 ## Usage
 
