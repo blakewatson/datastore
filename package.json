@@ -1,11 +1,17 @@
 {
-  "name": "datastore",
+  "name": "@blakewatson/datastore",
   "version": "0.1.0",
   "description": "Save data to IndexedDB using localStorage APIs.",
   "main": "DataStore.js",
+  "devDependencies": {
+    "esbuild": "0.24.2"
+  },
   "scripts": {
     "build": "node build.mjs"
   },
+  "files": [
+    "dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/blakewatson/datastore.git"
@@ -14,15 +20,13 @@
     "localStorage",
     "storage",
     "data",
-    "IndexedDB"
+    "IndexedDB",
+    "database"
   ],
   "author": "Blake Watson",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/blakewatson/datastore/issues"
   },
-  "homepage": "https://github.com/blakewatson/datastore#readme",
-  "devDependencies": {
-    "esbuild": "0.24.2"
-  }
+  "homepage": "https://github.com/blakewatson/datastore#readme"
 }
