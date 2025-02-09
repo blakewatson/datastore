@@ -140,11 +140,6 @@ export default class DataStore {
       request.onerror = (event) => reject(request.error);
 
       request.onsuccess = () => {
-        if (request.result === undefined) {
-          reject(new Error('Key not found'));
-          db.close();
-          return;
-        }
         resolve(request.result);
         db.close();
       };
@@ -180,7 +175,7 @@ export default class DataStore {
 
         const store = transaction.objectStore(this.storeName);
 
-        const request = store.add(value, key);
+        const request = store.put(value, key);
 
         request.onerror = (event) => reject(request.error);
 
