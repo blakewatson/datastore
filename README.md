@@ -187,13 +187,13 @@ To upgrade a database, you can simply change the version number. With new `store
 
 ```javascript
 // Original setup of the database with 2 stores
-DataStore.setuDb({
+DataStore.setupDb({
   name: 'My Database',
   storesToCreate: ['data', 'metadata'],
 });
 
 // Adding a new store
-DataStore.setuDb({
+DataStore.setupDb({
   name: 'My Database',
   storesToCreate: ['data', 'metadata', 'resumes'],
   version: 2,
