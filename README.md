@@ -180,3 +180,22 @@ async function main() {
 ## Keys are strings
 
 DataStore only supports strings as keys. That said, you _can_ use numbers in `getItem`, `setItem`, and `removeItem`. Just be aware that they get converted to strings under the hood. The `keys()` method always returns an array of strings.
+
+## Upgrading
+
+To upgrade a database, you can simply change the version number. With new `storesToCreate` in the list, they will get added.
+
+```javascript
+// Original setup of the database with 2 stores
+DataStore.setuDb({
+  name: 'My Database',
+  storesToCreate: ['data', 'metadata'],
+});
+
+// Adding a new store
+DataStore.setuDb({
+  name: 'My Database',
+  storesToCreate: ['data', 'metadata', 'resumes'],
+  version: 2,
+});
+```
