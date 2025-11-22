@@ -26,7 +26,7 @@ const globalBuildOptions = {
   format: 'iife',
   globalName: '_DataStoreExports',
   footer: {
-    js: 'window.DataStore = _DataStoreExports.default;',
+    js: 'self.DataStore = _DataStoreExports.default;',
   },
 };
 

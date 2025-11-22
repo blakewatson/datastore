@@ -1,6 +1,6 @@
 {
   "name": "@blakewatson/datastore",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Save data to IndexedDB using localStorage APIs.",
   "main": "DataStore.js",
   "devDependencies": {
